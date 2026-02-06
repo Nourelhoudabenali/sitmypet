@@ -1,0 +1,261 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un gardien - PitMyPet{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow border-0">
+                <div class="card-header text-white py-3" style="background: linear-gradient(90deg, #6610f2, #6610f2);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="h4 mb-0">
+                            <i class="bi bi-person-plus me-2"></i>Ajouter un gardien
+                        </h2>
+                        <span class="badge bg-light " style ="color: #6610f2;">Formulaire</span>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form>
+                        <!-- Section 1 : Informations personnelles -->
+                        <div class="mb-5">
+                            <div class="section-header mb-4">
+                                <h3 class="h5 border-bottom pb-2" style ="color: #6610f2;">
+                                    <i class="bi bi-person-badge me-2"></i>Informations personnelles
+                                </h3>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="nom" class="form-label fw-bold">
+                                        <i class="bi bi-card-text me-1"></i>Nom:
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="nom" value="sarra">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="prenom" class="form-label fw-bold">
+                                        <i class="bi bi-card-text me-1"></i>Prénom:
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="prenom" value="Hajji">
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-gender-ambiguous me-1"></i>Genre:
+                                    </label>
+                                    <div class="border rounded p-3 bg-light">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="genre" id="femme" value="Female" checked>
+                                            <label class="form-check-label fw-normal" for="femme">
+                                                <i class="bi bi-gender-female text-danger me-1"></i>Female
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="genre" id="homme" value="Male">
+                                            <label class="form-check-label fw-normal" for="homme">
+                                                <i class="bi bi-gender-male text-primary me-1"></i>Male
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="telephone" class="form-label fw-bold">
+                                        <i class="bi bi-telephone me-1"></i>Téléphone:
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+216</span>
+                                        <input type="tel" class="form-control form-control-lg" id="telephone" value="99693215">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="naissance" class="form-label fw-bold">
+                                        <i class="bi bi-calendar-date me-1"></i>Date de naissance:
+                                    </label>
+                                    <input type="date" class="form-control form-control-lg" id="naissance" value="1994-05-08">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label fw-bold">
+                                        <i class="bi bi-envelope me-1"></i>Email:
+                                    </label>
+                                    <input type="email" class="form-control form-control-lg" id="email" value="SarraHajji99@gmail.com">
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="password" class="form-label fw-bold">
+                                        <i class="bi bi-key me-1"></i>Mot de passe:
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control form-control-lg" id="password" value="*********">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password', this)">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="confirm" class="form-label fw-bold">
+                                        <i class="bi bi-key-fill me-1"></i>Confirmation:
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control form-control-lg" id="confirm" value="*********">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirm', this)">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2 : Adresse personnelle -->
+                        <div class="mb-5">
+                            <div class="section-header mb-4">
+                                <h3 class="h5 border-bottom pb-2"  style ="color: #6610f2;">
+                                    <i class="bi bi-house-door me-2"></i>Adresse personnelle
+                                </h3>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="villePerso" class="form-label fw-bold">Ville:</label>
+                                    <input type="text" class="form-control form-control-lg" id="villePerso" value="Gasserine">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="ruePerso" class="form-label fw-bold">Rue:</label>
+                                    <input type="text" class="form-control form-control-lg" id="ruePerso" value="Rue Bourguiba">
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="cpPerso" class="form-label fw-bold">Code postal:</label>
+                                    <input type="text" class="form-control form-control-lg" id="cpPerso" value="1210">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3 : Adresse du chenil -->
+                        <div class="mb-4">
+                            <div class="section-header mb-4">
+                                <h3 class="h5 border-bottom pb-2" style ="color: #6610f2;">
+                                    <i class="bi bi-building me-2"></i>Adresse du chenil
+                                </h3>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="villeChenil" class="form-label fw-bold">Ville:</label>
+                                    <input type="text" class="form-control form-control-lg" id="villeChenil" value="Sfax">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="rueChenil" class="form-label fw-bold">Rue:</label>
+                                    <input type="text" class="form-control form-control-lg" id="rueChenil" value="Rue Kammoun 1315">
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label for="cpChenil" class="form-label fw-bold">Code postal:</label>
+                                    <input type="text" class="form-control form-control-lg" id="cpChenil" value="1315">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="certificat" class="form-label fw-bold">
+                                        <i class="bi bi-file-earmark-text me-1"></i>Certificat ACACED:
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="file" class="form-control form-control-lg" id="certificat" accept=".png,.jpg,.jpeg,.pdf">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="bi bi-upload me-1"></i>Choisir
+                                        </button>
+                                    </div>
+                                    <div class="form-text text-success">
+                                        <i class="bi bi-check-circle me-1"></i>Certificat_ACACED.png (fichier sélectionné)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="d-flex justify-content-between mt-5 pt-4 border-top">
+                            <a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>Retour à l'accueil
+                            </a>
+                            
+                            <div>
+                                <button type="reset" class="btn btn-warning btn-lg me-3">
+                                    <i class="bi bi-eraser me-2"></i>Réinitialiser
+                                </button>
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="bi bi-check-circle me-2"></i>Enregistrer le gardien
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer bg-light py-3">
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Note :</strong> Tous les champs sont obligatoires. Le certificat ACACED doit être valide.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector('i');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
+</script>
+
+<style>
+    .section-header {
+        background: linear-gradient(90deg, rgba(13,110,253,0.1) 0%, rgba(13,110,253,0.05) 100%);
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .form-control-lg {
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .form-control-lg:focus {
+        border-color: #764ba2;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}

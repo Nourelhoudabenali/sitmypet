@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PitMyPet - Gardiens d'animaux{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #6822d8;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            padding-top: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .dropdown-menu {
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .dropdown-item {
+            border-radius: 5px;
+            margin: 2px 5px;
+            width: calc(100% - 10px);
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .badge-notification {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 0.6rem;
+            padding: 0.25em 0.5em;
+        }
+        
+        main {
+            flex: 1;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+            border-right: 1px solid #dee2e6;
+            min-height: calc(100vh - 56px);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar .nav-link {
+            color: #495057;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 5px 10px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .sidebar .nav-link i {
+            width: 24px;
+            text-align: center;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .content-container {
+            padding: 20px;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #764ba2 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 2px solid #f0f0f0;
+            font-weight: 600;
+            padding: 15px 20px;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            margin-top: auto;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #764ba2 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+        }
+    </style>
+    
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top" style="background-color: #6822d8;">
+        <div class="container-fluid">
+            <!-- Logo et nom -->
+            <a class="navbar-brand" href="{{ path('app_home') }}">
+                <i class="bi bi-house-heart me-2"></i>PitMyPet
+            </a>
+            
+            <!-- Bouton mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Menu principal -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.request.get('_route') == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
+                            <i class="bi bi-house-door"></i> Tableau de bord
+                        </a>
+                    </li>
+                    
+                    <!-- Menu déroulant Gardiens -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ app.request.get('_route') starts with 'app_gardien' ? 'active' : '' }}" 
+                           href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-people"></i> Gardiens
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item {{ app.request.get('_route') == 'app_gardien_ajouter' ? 'active' : '' }}" 
+                                   href="{{ path('app_gardien_ajouter') }}">
+                                    <i class="bi bi-person-plus"></i> Ajouter un gardien
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-list-ul"></i> Liste des gardiens
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-calendar-check"></i> Disponibilités
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-star"></i> Évaluations
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Menu déroulant Animaux -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-heart"></i> Animaux
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-plus-circle"></i> Ajouter un animal
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-list-task"></i> Liste des animaux
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-clipboard-plus"></i> Dossiers médicaux
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-shield-check"></i> Vaccinations
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Menu déroulant Réservations -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-calendar-event"></i> Réservations
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-plus-circle-dotted"></i> Nouvelle réservation
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-calendar-week"></i> Planning
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-clock-history"></i> Historique
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-cash-coin"></i> Paiements
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                   
+                </ul>
+                
+                <!-- Menu utilisateur à droite -->
+                <ul class="navbar-nav ms-auto">
+                    <!-- Recherche -->
+                    <li class="nav-item">
+                        <form class="d-flex me-3" role="search">
+                            <div class="input-group">
+                                <input type="search" class="form-control" placeholder="Rechercher..." aria-label="Search">
+                                <button class="btn btn-outline-light" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </li>
+                    
+                    <!-- Notifications -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell fs-5"></i>
+                            <span class="badge bg-danger badge-notification">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                            <li>
+                                <h6 class="dropdown-header">
+                                    <i class="bi bi-bell-fill me-2"></i>Notifications
+                                </h6>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="bi bi-calendar-check text-success"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="mb-0">Nouvelle réservation</p>
+                                            <small class="text-muted">Il y a 5 min</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="bi bi-exclamation-triangle text-warning"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="mb-0">Vaccin à renouveler</p>
+                                            <small class="text-muted">Il y a 2 heures</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="bi bi-chat-left-text text-info"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="mb-0">Nouveau message</p>
+                                            <small class="text-muted">Il y a 1 jour</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-center" href="#">
+                                    <i class="bi bi-eye me-1"></i>Voir toutes les notifications
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Messages -->
+                    <li class="nav-item dropdown me-2">
+                        <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-envelope fs-5"></i>
+                            <span class="badge bg-warning badge-notification">5</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                            <li>
+                                <h6 class="dropdown-header">
+                                    <i class="bi bi-envelope-fill me-2"></i>Messages
+                                </h6>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0">
+                                            <div class="user-avatar">S</div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="mb-0">Sarra Hajji</p>
+                                            <small class="text-muted">Bonjour, je voulais...</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0">
+                                            <div class="user-avatar">M</div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="mb-0">Mohamed</p>
+                                            <small class="text-muted">Question sur la...</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-center" href="#">
+                                    <i class="bi bi-envelope-open me-1"></i>Voir tous les messages
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Profil utilisateur -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="user-avatar me-2">A</div>
+                            <span>Admin</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-person-circle me-2"></i>Mon profil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-gear me-2"></i>Paramètres
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-shield-check me-2"></i>Sécurité
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-moon me-2"></i>Mode sombre
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-translate me-2"></i>Langue
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="#">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu principal avec sidebar -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 col-md-3 d-none d-md-block sidebar p-0">
+                <div class="p-3">
+                    <h6 class="text-uppercase text-muted mb-3">
+                        <i class="bi bi-menu-button-wide me-2"></i>Menu rapide
+                    </h6>
+                </div>
+                <nav class="nav flex-column">
+                    <a class="nav-link {{ app.request.get('_route') == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
+                        <i class="bi bi-speedometer2"></i> Tableau de bord
+                    </a>
+                    <a class="nav-link {{ app.request.get('_route') == 'app_gardien_ajouter' ? 'active' : '' }}" href="{{ path('app_gardien_ajouter') }}">
+                        <i class="bi bi-person-plus"></i> Ajouter gardien
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-calendar-plus"></i> Nouvelle réservation
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-cash-coin"></i> Paiements
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-file-earmark-medical"></i> Dossiers santé
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-chat-left-text"></i> Messages
+                        <span class="badge bg-warning float-end">5</span>
+                    </a>
+                </nav>
+                
+              
+            </div>
+            
+            <!-- Contenu principal -->
+            <main class="col-lg-10 col-md-9 ms-sm-auto content-container">
+                {% block body %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <span class="text-white-50">
+                        <i class="bi bi-c-circle"></i> {{ "now"|date("Y") }} PitMyPet. Tous droits réservés.
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="#" class="text-white-50 me-3">
+                        <i class="bi bi-shield-check"></i> Confidentialité
+                    </a>
+                    <a href="#" class="text-white-50 me-3">
+                        <i class="bi bi-file-text"></i> Conditions
+                    </a>
+                    <a href="#" class="text-white-50">
+                        <i class="bi bi-question-circle"></i> Aide
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Activer les tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Gérer la visibilité du mot de passe
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+        
+        // Marquer les liens actifs
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+    
+    {% block javascripts %}{% endblock %}
+</body>
+</html>
